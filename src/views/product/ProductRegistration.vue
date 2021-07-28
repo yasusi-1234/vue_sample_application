@@ -1,0 +1,173 @@
+<template>
+  <div>
+    <h4>商品登録</h4>
+    <div class="form">
+      <div>
+        <!-- リクエストはカテゴリーIDを送る -->
+        <label for="category">カテゴリー: </label>
+        <select id="category" v-model="addProductData.categoryId">
+          <option
+            v-for="category in categories"
+            :key="category.categoryId"
+            :value="category.categoryId"
+            >{{ category.categoryName }}</option
+          >
+        </select>
+      </div>
+      <div>
+        <label for="productName">商品名:</label>
+        <input
+          type="text"
+          id="productName"
+          v-model="addProductData.productName"
+        />
+      </div>
+      <div>
+        <label for="price">価格:</label>
+        <input
+          type="number"
+          id="price"
+          min="10"
+          value="10"
+          v-model.number="addProductData.price"
+        />
+      </div>
+      <div>
+        <label for="stock">在庫数:</label>
+        <input
+          type="number"
+          id="stock"
+          min="0"
+          value="0"
+          v-model.number="addProductData.stock"
+        />
+      </div>
+      <div>
+        <el-button
+          type="info"
+          icon="el-icon-plus"
+          size="mini"
+          @click="createProduct"
+          >登録</el-button
+        >
+      </div>
+    </div>
+
+    <h4>カテゴリー追加:</h4>
+    <div class="form">
+      <div>
+        <label for="categoryName">カテゴリー名:</label>
+        <input type="text" v-model="addCategoryData" />
+      </div>
+      <div>
+        <el-button type="info" icon="el-icon-plus" size="mini" @click="createCategory">登録</el-button>
+      </div>
+    </div>
+
+    <div>
+      {{ addProductData }}
+    </div>
+    <div>
+      {{ addCategoryData }}
+    </div>
+    <div>
+      {{ categories }}
+    </div>
+  </div>
+</template>
+
+<script>
+import { mapGetters, mapActions } from "vuex";
+import axios from "../../communication/communication";
+
+export default {
+  name: "productRegistation",
+  data() {
+    return {
+      addProductData: {
+        categoryId: null,
+        productName: "",
+        price: null,
+        stock: null,
+      },
+      addCategoryData: "",
+    };
+  },
+  computed: {
+    ...mapGetters(["categories"]),
+  },
+  methods: {
+    ...mapActions(["addProduct", "addCategory"]),
+    createProduct() {
+      // validation用
+      let message = "";
+      const { categoryId, productName, price, stock } = this.addProductData;
+      message = categoryId ? message : "カテゴリー名が指定されていません\r\n";
+      message = productName ? message : message + "商品名が入力されていません\r\n";
+      message = price < 10 ? message + "価格が入力されていません。または値が10未満です\r\n" : message;
+      message = stock ? message : message + "在庫数が入力されていません";
+
+      // messageに値が入力されていた場合はエラーの処理
+      if (message) {
+        this.$message({
+          message,
+          type: "warning",
+          duration: 5000,
+        });
+      } else {
+        // 登録リクエスト
+        axios
+          .post("/product/register", this.addProductData)
+          .then((res) => {
+            this.addProduct(res.data);
+            this.$message({
+              message: "新しい商品を追加しました",
+              type: "success",
+            });
+             // 初期化
+            this.addProductData = { categoryId: null,  productName: "", price: null, stock: null, }
+          })
+          .catch((error) => {
+            // 失敗した場合の処理
+            console.log(error);
+          });
+      }
+    },
+    createCategory(){
+      // validation用
+      let message = "";
+      message = this.addCategoryData.trim() ? message : "カテゴリー名が指定されていません";
+
+      // messageに値が入力されていた場合はエラーの処理
+      if (message) {
+        this.$message({ message, type: "warning" });
+      } else {
+        // 登録リクエスト
+        axios
+          .post("/product/category/register",{ categoryName: this.addCategoryData })
+          .then((res) => {
+            this.addCategory(res.data);
+            this.$message({
+              message: "新しいカテゴリーを追加しました",
+              type: "success",
+            });
+             // 初期化
+            this.addCategoryData = ""
+          })
+          .catch((error) => {
+            // 失敗した場合の処理
+            console.log(error);
+          });
+      }
+    }
+  },
+};
+</script>
+
+<style scoped lang="scss">
+.form {
+  margin-top: 30px;
+  margin-right: 20px;
+  border: 1px solid black;
+}
+</style>
