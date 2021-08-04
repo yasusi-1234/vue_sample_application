@@ -15,12 +15,14 @@ export default{
   name: "app",
   data(){
     return {
-      access: false,
+      access: true,
     }
   },
   methods:{
     ...mapActions(["setSales", "setProducts", "setCategories"])
   },
+  // test段階の実装、後にログインしてから読み込みするように変更する。また数が多い場合も考慮して
+  // 分割してエンドポイントにアクセスするかも考える必要あり
   created(){
     if(this.access){
       axios.get('sales').then(res => {
@@ -45,6 +47,11 @@ export default{
   -moz-osx-font-smoothing: grayscale;
   // text-align: center;
   color: #2c3e50;
+  background-color: #f6ffff;
+}
+
+body{
+  margin: 0px;
 }
 
 </style>
