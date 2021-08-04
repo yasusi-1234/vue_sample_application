@@ -1,58 +1,61 @@
 <template>
-  <div>
-    <h3 class="form-title">商品登録</h3>
-    <div class="form">
-      <div class="form-inner">
-        <div class="form-inner-item">
-          <!-- リクエストはカテゴリーIDを送る -->
-          <label class="form-label" for="category">カテゴリー: </label>
-          <select id="category" v-model="addProductData.categoryId">
-            <option
-              v-for="category in categories"
-              :key="category.categoryId"
-              :value="category.categoryId"
-              >{{ category.categoryName }}</option
+  <div id="top">
+    <div>
+      <h3 class="form-title">商品登録</h3>
+      <div class="form">
+        <div class="form-inner">
+          <div class="form-inner-item">
+            <!-- リクエストはカテゴリーIDを送る -->
+            <label class="form-label" for="category">カテゴリー: </label>
+            <select id="category" v-model="addProductData.categoryId" class="form-select">
+              <option
+                v-for="category in categories"
+                :key="category.categoryId"
+                :value="category.categoryId"
+                >{{ category.categoryName }}</option
+              >
+            </select>
+          </div>
+          <div class="form-inner-item">
+            <label class="form-label" for="productName">商品名:</label>
+            <input
+              class="form-input"
+              type="text"
+              id="productName"
+              v-model="addProductData.productName"
+            />
+          </div>
+          <div class="form-inner-item">
+            <label class="form-label" for="price">価格:</label>
+            <input
+              class="form-input"
+              type="number"
+              id="price"
+              min="10"
+              value="10"
+              v-model.number="addProductData.price"
+            />
+          </div>
+          <div class="form-inner-item">
+            <label class="form-label" for="stock">在庫数:</label>
+            <input
+              class="form-input"
+              type="number"
+              id="stock"
+              min="0"
+              value="0"
+              v-model.number="addProductData.stock"
+            />
+          </div>
+          <div class="form-inner-item">
+            <el-button
+              type="info"
+              icon="el-icon-plus"
+              size="midium"
+              @click="createProduct"
+              >登録</el-button
             >
-          </select>
-        </div>
-        <div class="form-inner-item">
-          <label class="form-label" for="productName">商品名:</label>
-          <input
-            type="text"
-            id="productName"
-            v-model="addProductData.productName"
-          />
-        </div>
-        <div class="form-inner-item">
-          <label class="form-label" for="price">価格:</label>
-          <input
-            type="number"
-            id="price"
-            min="10"
-            value="10"
-            v-model.number="addProductData.price"
-          />
-        </div>
-        <div class="form-inner-item">
-          <label class="form-label" for="stock">在庫数:</label>
-          <input
-            type="number"
-            id="stock"
-            min="0"
-            value="0"
-            v-model.number="addProductData.stock"
-          />
-        </div>
-        <div class="form-inner-item">
-          <el-button
-            type="info"
-            icon="el-icon-plus"
-            size="midium"
-            @click="createProduct"
-            >登録</el-button
-          >
-        </div>
-
+          </div>
       </div>
     </div>
 
@@ -61,7 +64,8 @@
       <div class="form-inner">
         <div class="form-inner-item">
           <label class="form-label form-label-category" for="categoryName">カテゴリー名:</label>
-          <input type="text" v-model="addCategoryData" />
+          <input
+            class="form-input" type="text" v-model="addCategoryData" />
         </div>
         <div class="form-inner-item">
           <el-button type="info" icon="el-icon-plus" size="midium" @click="createCategory">登録</el-button>
@@ -77,6 +81,7 @@
     </div>
     <div>
       {{ categories }}
+    </div>
     </div>
   </div>
 </template>
@@ -97,6 +102,9 @@ export default {
       },
       addCategoryData: "",
     };
+  },
+  created(){
+    console.log(this)
   },
   computed: {
     ...mapGetters(["categories"]),
@@ -180,7 +188,10 @@ export default {
   &-inner{
     margin: 15px;
     &-item{
-      margin-bottom: 13px;
+      // margin-bottom: 13px;
+      margin: 20px 0px 13px 10px;
+      display: flex;
+      align-items: center;
     }
   }
 
@@ -192,5 +203,16 @@ export default {
       width: 120px;
     }
   }
+
+  &-input{
+    height: 20px;
+    font-size: 17px;
+  }
+
+  &-select{
+    height: 25px;
+    font-size: 15px;
+  }
 }
+
 </style>
