@@ -2,7 +2,7 @@
   <div>
     <h1>ログインページ</h1>
     <div class="login-form">
-    <el-card shadow="always" class="card">
+    <!-- <el-card shadow="always" class="card">
       <el-form
         status-icon
         label-width="100px"
@@ -25,20 +25,30 @@
             >ログイン</el-button
           >
       </el-form>
-    </el-card>
+    </el-card> -->
+      
+      <div class="form">
+        <div class="form-inner">
+          <div class="form-inner-item form-inner-item-top">
+            <label class="form-label" for="categoryName">ユーザーID:</label>
+            <input
+              class="form-input" type="text" v-model="form.id" />
+          </div>
+          <div class="form-inner-item">
+            <label class="form-label" for="categoryName">パスワード:</label>
+            <input
+              class="form-input" type="password" v-model="form.password" />
+          </div>
+          <div class="form-inner-item">
+            <el-button type="info" icon="el-icon-unlock" size="midium"
+            class="form-inner-button">ログイン</el-button>
+          </div>
+        </div>
+      </div>
+
     </div>
     <div>
       {{ form }}
-    </div>
-    <div>
-      <div>this is test axios</div>
-      <input type="text" v-model="requestPath">
-      <input type="radio" v-model="requestMethod" id="get" value="get"><label>GET</label><br>
-      <input type="radio" v-model="requestMethod" id="post" value="post"><label>POST</label><br>
-      <button @click="acsess">アクセス</button>
-      <p>
-        {{ requestPath }} : {{ requestMethod }}
-      </p>
     </div>
   </div>
 </template>
@@ -75,25 +85,63 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.login-form{
-  width: 40%;
-  margin: auto;
-}
+@import '../style/login.scss';
 
-.mt{
+.form {
   margin-top: 30px;
-}
+  margin-right: 20px;
+  border: 3px solid #cad0d6;
+  border-radius: 8px;
+  box-shadow: 2px 2px 5px 0px #00000030;
 
-.mr{
-  margin-right: 30px;
-}
+  &-inner{
+    margin: 15px;
+    &-item{
+      // margin-bottom: 13px;
+      margin: 25px 0px 13px 10px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      &-top{
+        margin-top: 40px;
+      }
+    }
 
-.ft-size{
-  font-weight: bold;
-}
+    &-button{
+      margin: auto;
+      margin-bottom: 10px;
+    }
+  }
 
-.card{
-  border-radius: 10px;
+  &-label{
+    display: inline-block;
+    min-width: 100px;
+    width: 100px;
+    font-weight: bold;
+  }
+
+  &-input{
+    height: 30px;
+    font-size: 17px;
+    min-width: 100px;
+    width: 60%;
+
+    &:focus{
+      border: 2px solid #8ad08a;
+      background-color: #ebfffc;
+      outline: none;
+    }
+
+    &-error{
+      border: 2px solid #f56c6c;
+      background-color: #f5dfdf;
+      &:focus{
+        outline: none; 
+        border-color: red;
+      }
+    }
+  }
+
 }
 
 </style>
