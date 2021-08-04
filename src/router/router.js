@@ -6,11 +6,14 @@ import footerArea from '../views/Footer.vue'
 
 import home from '../views/Home.vue'
 import login from '../views/Login.vue'
+
 import product from '../views/ProductManagement.vue'
 import salesRegistration from '../views/product/SalesRegistration.vue'
-import confirmation from '../views/sales/SalesConfirmation.vue'
 import productRegistration from '../views/product/ProductRegistration.vue'
+import productSupply from '../views/product/ProductSupply.vue'
+
 import salesReport from '../views/SalesReport.vue'
+import confirmation from '../views/sales/SalesConfirmation.vue'
 
 
 Vue.use(Router)
@@ -56,6 +59,13 @@ const router = new Router({
           name: 'productRegistration',
           components:{
             productRegistration: productRegistration
+          }
+        },
+        {
+          path: 'supply',
+          name: 'supply',
+          components:{
+            productSupply: productSupply
           }
         }
       ]
