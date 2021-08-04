@@ -34,7 +34,7 @@
             <i class="el-icon-notebook-1"></i>
             <span>売上登録</span>
           </el-menu-item>
-          <el-menu-item index="2" @click="handleSelect" route="/products/sales">
+          <el-menu-item index="2" @click="handleSelect" route="/products/supply">
             <i class="el-icon-box"></i>
             <span>在庫補充</span>
           </el-menu-item>
@@ -47,6 +47,7 @@
       <el-col :span="18">
         <router-view name="sales"></router-view>
         <router-view name="productRegistration"></router-view>
+        <router-view name="productSupply"></router-view>
       </el-col>
     </el-row>
   </div>
