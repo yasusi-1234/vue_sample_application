@@ -1,0 +1,21 @@
+.table {
+    margin-top: 15px;
+    width: 100%;
+    border-spacing: 0;
+    &-th {
+      border-bottom: 4px solid #dddddd;
+      text-align: left;
+    }
+    &-td {
+      border-bottom: 2px solid #dddddd;
+    }
+  
+    & tbody td {
+      padding: 15px 0;
+    }
+    
+  }
+
+  .input-number{
+    width: 50px;
+  }

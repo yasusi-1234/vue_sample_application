@@ -1,0 +1,25 @@
+.form {
+    &-inner {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      // align-self: center;
+      border: solid 3px #cad0d6;
+    }
+  
+    &-item {
+      // display: inline-block;
+      margin: 10px 20px 10px 10px;
+      &-select{
+        height: 28px;
+      }
+  
+      &-input{
+        height: 20px;
+      }
+
+      &-label{
+        font-weight: bold;
+      }
+    }
+  }

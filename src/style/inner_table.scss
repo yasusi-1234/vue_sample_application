@@ -1,0 +1,47 @@
+.inner{
+    position: fixed;
+    background-color: rgb(0 0 0 / 50%);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+  
+    display: flex;
+    justify-content: center;
+  
+    visibility: hidden;
+    opacity: 0;
+    transition: all 1s;
+  
+    &-element{
+      background-color: #f9f9f9;
+      width: 65%;
+      height: 70%;
+      position: fixed;
+      top: 15%;
+      z-index: 20;
+  
+      border: solid 3px #cad0d6;
+  
+      &-table{
+        width: 85%;
+        margin: auto;
+  
+        &-head{
+          text-align: left;
+        }
+      }
+  
+      &-button{
+          display: block;
+          margin: auto;
+          margin-top: 15px;
+      }
+    }
+  }
+  
+  .active{
+    visibility: visible;
+    opacity: 1;
+  }
