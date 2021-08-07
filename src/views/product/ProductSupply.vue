@@ -157,7 +157,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["simpleProducts", "simpleProductSize", "categories"]),
+    ...mapGetters(["products", "simpleProductSize", "categories"]),
     searchProduct() {
       return this.$store.getters.searchProduct(this.search);
     },
