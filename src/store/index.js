@@ -13,27 +13,14 @@ export default new Vuex.Store({
     categories: [],
   },
   getters:{
-    // 
-    sales: state => state.sales,
-    products: state => state.products,
     // 製品販売情報のリスト
-    simpleSales: state => {
-      return state.sales.map(sale =>{
-        return {
-          salesId: sale.salesId,
-          salesTime: sale.salesTime,
-          soldCount: sale.soldCount,
-          productName: sale.product.productName,
-          price: sale.product.price,
-          category: sale.product.category.categoryName,
-          categoryId: sale.product.category.categoryId,
-          parseDate: Date.parse(sale.salesTime),
-        }
-      })
-    },
+    sales: state => state.sales,
+    // 製品データ
+    products: state => state.products,
     // simpleSalesのオブジェクトを売上日時の降順に並べ替えたデータ
-    simpleOrderDateSales: (state, getters) => ({categoryId, specifyDate, productName}) => {
-      let returnData = getters.simpleSales.map(sale =>({...sale}))
+    simpleOrderDateSales: state => ({categoryId, specifyDate, productName}) => {
+      // let returnData = state.sales.map(sale =>({...sale}))
+      let returnData = state.sales
       const trimProductName = productName.trim()
       const isCategoryAll = categoryId === 0
       const specifyDateObj = betweenSpecifyDate(specifyDate)
@@ -57,29 +44,14 @@ export default new Vuex.Store({
       sortObjReverse(returnData , "parseDate") // 日付の降順に並べ替え
       return returnData
     },
-    // 製品情報リスト
-    simpleProducts: state =>{
-      return state.products.map(pro =>{
-        return {
-          category: pro.category.categoryName,
-          categoryId: pro.category.categoryId,
-          productName: pro.productName,
-          price: pro.price,
-          productId: pro.productId,
-          stock: pro.stock,
-          buyCount: 0,
-          supplyCount: 0
-        }
-      })
-    },
     // 製品情報から条件で絞って抽出したデータリスト
-    searchProduct: (state, getters) => ({categoryId, stock, productName}) => {
-      const data = getters.simpleProducts.map(product =>({...product}))
+    searchProduct: state => ({categoryId, stock, productName}) => {
+      // const data = getters.products.map(product =>({...product}))
       const searchName = productName.trim()
       const noText = searchName === ''
       // console.log(data, categoryId, stock);
 
-      const returnData = data.filter(d => { 
+      const returnData = state.products.filter(d => { 
         
         if(stock == 'inStock'){
           // 在庫有かつ
@@ -130,7 +102,18 @@ export default new Vuex.Store({
     },
     // sales情報の追加を行うメソッド
     addSales(state, responseData){
-      state.sales.push(responseData)
+      const sale = {
+        salesId: responseData.salesId,
+        salesTime: responseData.salesTime,
+        soldCount: responseData.soldCount,
+        productName: responseData.product.productName,
+        price: responseData.product.price,
+        category: responseData.product.category.categoryName,
+        categoryId: responseData.product.category.categoryId,
+        parseDate: Date.parse(responseData.salesTime),
+        checked: false
+      }
+      state.sales.push(sale)
     },
     addProduct(state, requestProduct){
       state.products.push(requestProduct)
@@ -139,13 +122,20 @@ export default new Vuex.Store({
       state.categories.push(categoryData)
     },
     // productの情報を更新するメソッド(SalesRegistration.vue用)
-    updateProducts(state, responseData){
+    updateProducts(state, { requestData, error = false }){
       // stateの状態を更新する処理
       const products = state.products;
-      let product = products.find(p => p.productId == responseData.product.productId)
+      let product = products.find(p => p.productId == requestData.product.productId)
       // stateのproductsの内部情報更新
-      product.stock = responseData.product.stock
-      product.buyCount = 0
+      product.stock = requestData.product.stock
+      console.log(error)
+      if(error){
+        // エラーだった場合のリクエスト
+        product.buyCount = requestData.product.stock
+      }else{
+        // 通常のリクエスト
+        product.buyCount = 0
+      }
     },
     // productの情報を更新するメソッド(ProductSupply.vue用)
     updateSupplyProducts(state, requestData){
@@ -155,14 +145,45 @@ export default new Vuex.Store({
       // stateのproductsの内部情報更新
       product.stock = requestData.stock
       product.supplyCount = 0
-    }
+    },
+    // 製品販売情報の要素をIdから特定し削除する
+    deleteSalesData(state, deleteId){
+      console.log(deleteId)
+      state.sales = state.sales.filter(sale => sale.salesId !== deleteId)
+    },
   },
   actions: {
     setSales({ commit }, salesData){
-      commit('setSales', salesData)
+      const sales = salesData.map(sale =>{
+        return {
+          salesId: sale.salesId,
+          salesTime: sale.salesTime,
+          soldCount: sale.soldCount,
+          productName: sale.product.productName,
+          price: sale.product.price,
+          category: sale.product.category.categoryName,
+          categoryId: sale.product.category.categoryId,
+          parseDate: Date.parse(sale.salesTime),
+          checked: false,
+        }
+      })
+      commit('setSales', sales)
     },
+    // 製品情報
     setProducts({ commit }, productData){
-      commit('setProducts', productData)
+      const products = productData.map(product =>{
+        return {
+          category: product.category.categoryName,
+          categoryId: product.category.categoryId,
+          productName: product.productName,
+          price: product.price,
+          productId: product.productId,
+          stock: product.stock,
+          buyCount: 0,
+          supplyCount: 0
+        }
+      })
+      commit('setProducts', products)
     },
     setCategories({ commit }, categoryData){
       sortObj(categoryData, 'categoryId');
@@ -197,7 +218,7 @@ export default new Vuex.Store({
       axios.post('/sales/register',requestData).then(res => {
         console.log(res.data)
         commit('addSales', res.data)
-        commit('updateProducts', res.data)
+        commit('updateProducts', { requestData: res.data })
         message({
           message: "販売リクエストが完了しました。販売商品： " + productName + " 販売数： " + soldCount,
           type: "success"
@@ -206,7 +227,8 @@ export default new Vuex.Store({
         console.log(error.response)
         // 商品情報のズレがある場合の返却値が含まれていれば
         if(error.response.data.product){
-          commit('updateProducts', (error.response.data));
+
+          commit('updateProducts', { requestData: error.response.data, error: true });
           message({
             message: "在庫数にズレがあったため、販売リクエストが失敗しました。実在庫数： " +
             error.response.data.product.stock + " リクエスト販売数： " + soldCount + " 値を修正してください。",
@@ -281,7 +303,7 @@ export default new Vuex.Store({
           // 販売情報の追加
           commit('addSales', data)
           // 商品状態の更新
-          commit('updateProducts', data)
+          commit('updateProducts', { requestData: data })
         })
         message({
           message: '販売情報の更新が完了しました',
@@ -294,7 +316,7 @@ export default new Vuex.Store({
         // 商品情報のズレがある場合の返却値が含まれていれば ただし現状は一つの要素しか返ってこない
         console.log(error.response)
         if(error.response.data.product){
-          commit('updateProducts', (error.response.data))
+          commit('updateProducts', { requestData: error.response.data, error: true})
           message({
             message: error.response.data.product.productName + "の在庫数にズレがあったため、販売リクエストが失敗しました。実在庫数： " +
             error.response.data.product.stock + " 値を修正してください。",
@@ -347,7 +369,91 @@ export default new Vuex.Store({
       })
 
       return result
-    }
+    },
+    // 注文情報の削除(取り消し処理)
+    async deleteSalesRequest({ commit }, { deleteData, message, confirm}){
+      
+      let isRequestOk = await confirm(deleteData.length + '件のデータを削除します。よろしいですか？', '注文情報の削除',{
+        confirmButtonText: '削除確定',
+        cancelButtonText: '取り消し',
+        type: 'warning',
+        center: true
+      }).then(() => {
+        console.log('YES')
+        return true
+      }).catch(() => {
+        message({
+          type: 'info',
+          message: '処理をキャンセルしました',
+          center: true,
+          duration: 5000
+        })
+        return false
+      })
+      
+      if(isRequestOk){
+        if(deleteData.length === 1){
+          const deleteId = deleteData[0]
+          console.log('処理前')
+          // 要素が一つの場合
+          const result = await axios.delete('sales/delete', {data: deleteId}).then(res => {
+            console.log(res.data)
+            // 注文情報の削除
+            commit('deleteSalesData', deleteData[0])
+            // 製品情報の更新
+            commit('updateSupplyProducts', res.data)
+            message({
+              type: 'success',
+              message: '注文情報の削除処理及び商品情報の更新に成功しました',
+              duration: 5000,
+              center: true
+            })
+            return true
+          }).catch(error => {
+            // ほぼ起こらないと思われる
+            message({
+              type: 'error',
+              duration: 5000,
+              message: error,
+              center: true
+            })
+            return false
+          })
+
+          return result
+        }else{
+          // 要素が複数の場合
+          const result = await axios.delete('/sales/multipleDelete', {data: deleteData}).then(res =>{
+            console.log(res.data)
+            res.data.forEach((product, index) =>{
+              console.log(product, index)
+              // 注文情報の削除
+              commit('deleteSalesData', deleteData[index])
+              // 製品情報の更新
+              commit('updateSupplyProducts', product)
+            })
+            message({
+              type: 'success',
+              message: '注文情報の削除処理及び商品情報の更新に成功しました',
+              duration: 5000,
+              center: true
+            })
+            return true
+          }).catch(error => {
+             // ほぼ起こらないと思われる
+             message({
+              type: 'error',
+              duration: 5000,
+              message: error,
+              center: true
+            })
+            return false
+          })
+          return result
+        }
+      }
+      return isRequestOk
+    },
   },
   modules: {
   }
