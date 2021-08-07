@@ -11,6 +11,7 @@ import product from '../views/ProductManagement.vue'
 import salesRegistration from '../views/product/SalesRegistration.vue'
 import productRegistration from '../views/product/ProductRegistration.vue'
 import productSupply from '../views/product/ProductSupply.vue'
+import salesCancel from '../views/product/SalesCancel.vue'
 
 import salesReport from '../views/SalesReport.vue'
 import confirmation from '../views/sales/SalesConfirmation.vue'
@@ -66,6 +67,13 @@ const router = new Router({
           name: 'supply',
           components:{
             productSupply: productSupply
+          }
+        },
+        {
+          path: 'cancel',
+          name: 'cancel',
+          components:{
+            salesCancel: salesCancel
           }
         }
       ]
