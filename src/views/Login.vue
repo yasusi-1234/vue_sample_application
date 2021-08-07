@@ -41,7 +41,7 @@
           </div>
           <div class="form-inner-item">
             <el-button type="info" icon="el-icon-unlock" size="midium"
-            class="form-inner-button">ログイン</el-button>
+            class="form-inner-button" @click="loginRequest">ログイン</el-button>
           </div>
         </div>
       </div>
@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import axios from '../communication/communication'
+// import axios from '../communication/communication'
 import { mapActions } from 'vuex'
 
 export default {
@@ -71,14 +71,12 @@ export default {
     }
   },
   methods:{
-    ...mapActions(["setSales", "setProducts"]),
-    acsess(){
-      if(this.requestMethod == 'get'){
-        axios.get(this.requestPath).then(res => {
-          console.log(res.data)
-          this.setSales(res.data)
-          });
-      }
+    ...mapActions(["setSales", "setProducts", "loginChange"]),
+    loginRequest(){
+      const result = this.loginChange(this.form)
+      console.log(result)
+      // resultの結果によって遷移先を制御
+      this.$router.push('/')
     }
   }
 };

@@ -11,8 +11,11 @@ export default new Vuex.Store({
     sales: [],
     products: [],
     categories: [],
+    isLogin: false, // テスト用
   },
   getters:{
+    // テスト用 loginしているかのフラグ
+    isLogin: state => state.isLogin,
     // 製品販売情報のリスト
     sales: state => state.sales,
     // 製品データ
@@ -91,6 +94,10 @@ export default new Vuex.Store({
     categories: state => state.categories,
   },
   mutations: {
+    // ログイン情報の変更
+    loginChange(state, status){
+      state.isLogin = status
+    },
     setSales(state, salesData){
       state.sales = salesData
     },
@@ -153,6 +160,16 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    loginChange({ commit }, inputData){
+      // 本来はここでログイン情報が正しいかチェックし、エンドポイントにアクセスしてその返り値に応じて適切に処理をする
+      console.log(inputData)
+
+      if(inputData === false){
+        commit('loginChange', false) // test用
+      }else{
+        commit('loginChange', true) // test用
+      }
+    },
     setSales({ commit }, salesData){
       const sales = salesData.map(sale =>{
         return {

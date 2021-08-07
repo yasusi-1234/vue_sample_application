@@ -9,9 +9,13 @@
       text-color="#fff"
       active-text-color="#ffd04b"
     >
+    <template v-if="!isLogin">
       <el-menu-item index="1" route="/login" @click="jump"
         >ログイン</el-menu-item
       >
+    </template>
+
+    <template v-if="isLogin">
       <el-menu-item index="2" route="/" @click="jump"
         >ホーム</el-menu-item
       >
@@ -33,14 +37,21 @@
           <el-menu-item index="5-4-3">item three</el-menu-item>
         </el-submenu>
       </el-submenu>
-      <el-menu-item index="6" disabled>Info</el-menu-item>
+      <el-menu-item index="6" @click="jump" route="/logout">ログアウト</el-menu-item>
+
+    </template>
     </el-menu>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: "header-area",
+  computed:{
+    ...mapGetters(['isLogin'])
+  },
   methods:{
       jump(el){
           console.log(el.route, this.$router.currentRoute.path)

@@ -1,11 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from '../store'
 
 import headerArea from '../views/Header.vue'
 import footerArea from '../views/Footer.vue'
 
 import home from '../views/Home.vue'
 import login from '../views/Login.vue'
+import logout from '../views/Logout.vue'
 
 import product from '../views/ProductManagement.vue'
 import salesRegistration from '../views/product/SalesRegistration.vue'
@@ -16,6 +18,7 @@ import salesCancel from '../views/product/SalesCancel.vue'
 import salesReport from '../views/SalesReport.vue'
 import confirmation from '../views/sales/SalesConfirmation.vue'
 
+import elementUI from 'element-ui'
 
 Vue.use(Router)
 
@@ -37,6 +40,35 @@ const router = new Router({
       components:{
         default: login,
         header: headerArea
+      },
+      beforeEnter(to, from, next){
+        if(store.getters.isLogin){
+          // ログインしている
+          alreadyLogin()
+          next('/')
+        }else{
+          // ログインしていない
+          next()
+        }
+      }
+    },
+    {
+      path: '/logout',
+      name: 'logout',
+      components:{
+        header: headerArea,
+        default: logout,
+        footer: footerArea
+      },
+      beforeEnter(to, from, next){
+        if(store.getters.isLogin){
+          // ログインしている
+          next()
+        }else{
+          pleaseLogin()
+          // ログインしていない
+          next('/login')
+        }
       }
     },
     {
@@ -46,6 +78,16 @@ const router = new Router({
         header: headerArea,
         default: product,
         footer: footerArea
+      },
+      beforeEnter(to, from, next){
+        if(store.getters.isLogin){
+          // ログインしている
+          next()
+        }else{
+          // ログインしていない
+          pleaseLogin()
+          next('/login')
+        }
       },
       children:[
         {
@@ -86,6 +128,16 @@ const router = new Router({
         header: headerArea,
         footer: footerArea
       },
+      beforeEnter(to, from, next){
+        if(store.getters.isLogin){
+          // ログインしている
+          next()
+        }else{
+          // ログインしていない
+          pleaseLogin()
+          next('/login')
+        }
+      },
       children:[
         {
           path: 'confirmation',
@@ -95,8 +147,30 @@ const router = new Router({
           }
         }
       ]
+    },
+    // レダイレクト
+    {
+      path: '*',
+      redirect: '/'
     }
   ],
 
-});
+})
 export default router
+
+function pleaseLogin(){
+    elementUI.Message({
+    message: 'ログイン処理を完了してください',
+    type: 'error',
+    duration: 4000
+  })
+}
+
+function alreadyLogin(){
+    elementUI.Message({
+    message: 'ログインは既に完了しています',
+    type: 'info',
+    duration: 4000
+  })
+}
+
