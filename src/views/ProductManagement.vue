@@ -42,12 +42,17 @@
             <i class="el-icon-setting"></i>
             <span>商品登録</span>
           </el-menu-item>
+          <el-menu-item index="4" @click="handleSelect" route="/products/cancel">
+            <i class="el-icon-delete"></i>
+            <span>商品取り消し</span>
+          </el-menu-item>
         </el-menu>
       </el-col>
       <el-col :span="18">
         <router-view name="sales"></router-view>
         <router-view name="productRegistration"></router-view>
         <router-view name="productSupply"></router-view>
+        <router-view name="salesCancel"></router-view>
       </el-col>
     </el-row>
   </div>
