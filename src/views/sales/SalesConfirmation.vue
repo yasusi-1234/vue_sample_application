@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h4>売上</h4>
+    <h4>売上情報</h4>
     <div class="form">
       <div class="form-inner">
         <div class="form-item">
@@ -137,7 +137,7 @@ export default {
     };
   },
   computed:{
-    ...mapGetters(["sales", "categories"]),
+    ...mapGetters(["categories"]),
     simpleOrderDateSales(){
       return this.$store.getters.simpleOrderDateSales(this.search)
     },
