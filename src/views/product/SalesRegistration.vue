@@ -119,6 +119,7 @@
         <p>dataSize: {{ dataSize }}, displayCount: {{ displayCount }}, partData: {{ partData }}</p>
         <p>{{ currentPage }}</p>
         <p>{{ withOrderData }}</p>
+        <button @click="d++">d++</button>
       </div>
 
         <!-- 一括注文で使う場所-->
@@ -173,11 +174,11 @@ export default {
       currentPage: 1, // 現在のページ
       isActive: false, // 一括注文用の表示・非表示用トグル
       withOrderData:[], // 一括注文用データ
-      loading: false // 一括処理用のボタンの制御用
+      loading: false, // 一括処理用のボタンの制御用
     };
   },
   computed: {
-    ...mapGetters(["simpleProducts", "simpleProductSize", "categories"]),
+    ...mapGetters(["products", "simpleProductSize", "categories"]),
     searchProduct() {
       return this.$store.getters.searchProduct(this.search);
     },
@@ -238,13 +239,13 @@ export default {
       }else{
         // 処理が失敗した
         // 失敗以後に購入用データ情報(this.withOrderData)が初期化されてしまう為、直されたデータを元に購入数データを書き換えている
-        this.searchProduct.forEach(product =>{
-          this.withOrderData.forEach(buyData =>{
-            if(product.productId == buyData.productId){
-              product.buyCount = product.buyCount < buyData.buyCount ? product.stock : buyData.buyCount
-            }
-          })
-        })
+        // this.searchProduct.forEach(product =>{
+        //   this.withOrderData.forEach(buyData =>{
+        //     if(product.productId == buyData.productId){
+        //       product.buyCount = product.buyCount < buyData.buyCount ? product.stock : buyData.buyCount
+        //     }
+        //   })
+        // })
       }
     }
   },
