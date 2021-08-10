@@ -89,7 +89,7 @@
                       productId: product.productId,
                       soldCount: product.buyCount,
                       stock: product.stock
-                    }, message, productName: product.productName})
+                    }, productName: product.productName})
                   "
                   >注文</el-button
                 >
@@ -192,9 +192,6 @@ export default {
       const partEndIndex = partStartIndex + this.displayCount
       return this.searchProduct.slice(partStartIndex, partEndIndex)
     },
-    message(){
-      return this.$message
-    }
   },
   methods: {
     ...mapActions(["orderRequest", "multipleOrderRequest"]),
@@ -212,12 +209,10 @@ export default {
     },
     // 一括処理用データの更新処理
     withOrderDataCounter(){
-      console.log('now counting')
       this.withOrderData = this.searchProduct.filter(product => product.buyCount > 0)
     },
     // 一括処理用のHTMLの表示のON・OFFを切り替える処理と、条件によって一括データを更新する処理
     hiddenClass(event){
-      // console.log(event)
       if(event !== undefined && event.target.className != 'inner'){
         this.withOrderDataCounter()
       }
@@ -228,8 +223,7 @@ export default {
       // ボタンを続けて押せないように制御
       this.loading = true
       // リクエスト送信
-      let result = await this.multipleOrderRequest({ requestData: this.withOrderData, message: this.message })
-      console.log(result)
+      let result = await this.multipleOrderRequest({ requestData: this.withOrderData })
         // ボタンロック解除
         this.hiddenClass()
         this.loading = false
@@ -249,22 +243,6 @@ export default {
       }
     }
   },
-   //ページが読み込まれる前に発火(this利用不可)
-    // beforeRouteEnter(to, from, next){
-    //     console.log('enter')
-    //     console.log(to)
-    //     next({query:{q1: "q1"}})
-    // },
-    //     // ページが更新されたときに発火
-    // beforeRouteUpdate(to, from, next){
-    //     console.log('update')
-    //     next()
-    // },
-    //     // ページから離れたとき発火
-    // beforeRouteLeave(to, from, next){
-    //     console.log('leave')
-    //         next()
-    // },
 };
 </script>
 
