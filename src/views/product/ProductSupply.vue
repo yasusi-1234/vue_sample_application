@@ -70,7 +70,7 @@
                   productId: product.productId,
                   requestValue: product.supplyCount,
                   subtraction: false,
-                }, message, productName: product.productName})
+                }, productName: product.productName})
               "
               >補充</el-button
             >
@@ -171,9 +171,6 @@ export default {
       const partEndIndex = partStartIndex + this.displayCount
       return this.searchProduct.slice(partStartIndex, partEndIndex)
     },
-    message(){
-        return this.$message
-    }
   },
   methods: {
     ...mapActions(["supplyProduct", "multipleSupplyRequest"]),
@@ -202,7 +199,7 @@ export default {
     async multiSupply(){
         // ボタンロック
         this.loading = true
-        const result = await this.multipleSupplyRequest({requestData: this.withSupplyData, message: this.message })
+        const result = await this.multipleSupplyRequest({requestData: this.withSupplyData })
 
         console.log(result)
         // ロック解除

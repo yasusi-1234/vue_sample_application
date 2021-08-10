@@ -29,7 +29,7 @@ export default {
   name: "sales",
   methods: {
       handleSelect(el){
-          console.log(el.route, this.$router.currentRoute.path)
+          // console.log(el.route, this.$router.currentRoute.path)
           if(el.route != this.$router.currentRoute.path){
               this.$router.push(el.route);
           }

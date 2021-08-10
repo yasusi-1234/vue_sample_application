@@ -52,7 +52,7 @@
               type="info"
               icon="el-icon-plus"
               size="midium"
-              @click="createProduct"
+              @click="createProductRequest"
               >登録</el-button
             >
           </div>
@@ -68,7 +68,7 @@
             class="form-input" type="text" v-model="addCategoryData" />
         </div>
         <div class="form-inner-item">
-          <el-button type="info" icon="el-icon-plus" size="midium" @click="createCategory">登録</el-button>
+          <el-button type="info" icon="el-icon-plus" size="midium" @click="createCategoryRequest">登録</el-button>
         </div>
       </div>
     </div>
@@ -88,7 +88,6 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import axios from "../../communication/communication";
 
 export default {
   name: "productRegistation",
@@ -103,15 +102,12 @@ export default {
       addCategoryData: "",
     };
   },
-  created(){
-    console.log(this)
-  },
   computed: {
-    ...mapGetters(["categories"]),
+    ...mapGetters(["categories", "headerInAccessToken"]),
   },
   methods: {
-    ...mapActions(["addProduct", "addCategory"]),
-    createProduct() {
+    ...mapActions(["createProduct", "createCategory"]),
+    async createProductRequest() {
       // validation用
       let message = "";
       const { categoryId, productName, price, stock } = this.addProductData;
@@ -127,26 +123,18 @@ export default {
           type: "warning",
           duration: 5000,
         });
-      } else {
+      } else{
         // 登録リクエスト
-        axios
-          .post("/product/register", this.addProductData)
-          .then((res) => {
-            this.addProduct(res.data);
-            this.$message({
-              message: "新しい商品を追加しました",
-              type: "success",
-            });
-             // 初期化
-            this.addProductData = { categoryId: null,  productName: "", price: null, stock: null, }
-          })
-          .catch((error) => {
-            // 失敗した場合の処理
-            console.log(error);
-          });
+        const result = await this.createProduct({addProductData: this.addProductData})
+        console.log(result)
+        if(result){
+          // 新規商品登録処理に成功した場合
+          // addProductDataの初期化
+          this.addProductData = { categoryId: null,  productName: "", price: null, stock: null, }
+        }
       }
     },
-    createCategory(){
+    async createCategoryRequest(){
       // validation用
       let message = "";
       message = this.addCategoryData.trim() ? message : "カテゴリー名が指定されていません";
@@ -155,22 +143,12 @@ export default {
       if (message) {
         this.$message({ message, type: "warning" });
       } else {
-        // 登録リクエスト
-        axios
-          .post("/product/category/register",{ categoryName: this.addCategoryData })
-          .then((res) => {
-            this.addCategory(res.data);
-            this.$message({
-              message: "新しいカテゴリーを追加しました",
-              type: "success",
-            });
-             // 初期化
-            this.addCategoryData = ""
-          })
-          .catch((error) => {
-            // 失敗した場合の処理
-            console.log(error);
-          });
+        // 問題無ければ新規カテゴリー登録リクエスト
+        const result = await this.createCategory({ categoryName: this.addCategoryData })
+        if(result){
+          // 処理に成功した場合
+          this.addCategoryData = ""
+        }
       }
     }
   },

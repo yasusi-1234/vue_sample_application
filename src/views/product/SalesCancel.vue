@@ -177,9 +177,6 @@ export default {
       const partEndIndex = partStartIndex + this.displayCount
       return this.simpleOrderDateSales.slice(partStartIndex, partEndIndex)
     },
-    message(){
-        return this.$message
-    },
     confirm(){
         return this.$confirm
     }
@@ -215,12 +212,10 @@ export default {
     },
     // デリートリクエスト処理
     async deleteRequest(){
-        console.log('aaa')
         this.loading = true
         const requestDeleteData = this.withDeleteData.map(sale => sale.salesId)
         this.hiddenClass()
-        const result = await this.deleteSalesRequest({deleteData: requestDeleteData, message: this.message, confirm: this.confirm})
-        console.log(result)
+        const result = await this.deleteSalesRequest({deleteData: requestDeleteData, confirm: this.confirm})
         if(result){
             // 正常に処理が完了した場合
             // 削除リクエストを格納するデータリストを初期化
