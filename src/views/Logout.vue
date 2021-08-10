@@ -32,6 +32,7 @@
 <script>
 // import axios from '../communication/communication'
 import { mapActions } from 'vuex'
+import axios from 'axios'
 
 export default {
   name: "login",
@@ -47,12 +48,13 @@ export default {
     }
   },
   methods:{
-      ...mapActions(["loginChange"]),
+      ...mapActions(["logout"]),
     logoutHandler(){
-        console.log('click')
-        this.loginChange(false)
-        this.$message({ type: 'success', message: 'ログアウトしました'})
-        this.$router.push('/login')
+        axios.get('http://localhost:8080/logout').then(() => {
+            this.logout();
+            this.$message({ type: 'success', message: 'ログアウトしました'})
+            this.$router.push('/login')
+        }).catch(error => console.log(error))
     }
   }
 };
